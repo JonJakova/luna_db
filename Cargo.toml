@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "luna",
+    "luna_lib",
+]
