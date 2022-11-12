@@ -1,19 +1,36 @@
 use super::traits::Storable;
 
-pub struct MemoryMap<T: Storable> {
-    entry: Box<SimpleEntry<T>>,
-    next: Option<Box<MemoryMap<T>>>,
+pub struct MemoryMap {
+    entry: SimpleEntry,
+    next: Option<Box<MemoryMap>>,
 }
 
-impl<T: Storable> MemoryMap<T> {
-    pub fn new(init_key: String, init_value: T) -> MemoryMap<T> {
+impl MemoryMap {
+    pub fn new(init_key: String, init_value: Box<dyn Storable>) -> MemoryMap {
         MemoryMap {
-            entry: Box::new(SimpleEntry::new(init_key, init_value)),
+            entry: SimpleEntry::new(init_key, init_value),
             next: None,
         }
     }
 
-    pub fn retrieve(&self, key: String) -> Option<&T> {
+    pub fn retrieve_all(&self) -> Vec<&SimpleEntry> {
+        let mut entries = Vec::new();
+        let mut current = self;
+        loop {
+            entries.push(&current.entry);
+            match &current.next {
+                Some(next) => {
+                    current = next;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
+        entries
+    }
+
+    pub fn retrieve(&self, key: String) -> Option<&Box<dyn Storable>> {
         if self.entry.key == key {
             Some(&self.entry.value)
         } else {
@@ -24,7 +41,7 @@ impl<T: Storable> MemoryMap<T> {
         }
     }
 
-    pub fn insert(&mut self, key: String, value: T) {
+    pub fn insert(&mut self, key: String, value: Box<dyn Storable>) {
         let mut current_map = self;
         loop {
             if current_map.entry.key == key {
@@ -42,13 +59,13 @@ impl<T: Storable> MemoryMap<T> {
     }
 }
 
-pub struct SimpleEntry<T: Storable> {
+pub struct SimpleEntry {
     pub key: String,
-    pub value: T,
+    pub value: Box<dyn Storable>,
 }
 
-impl<T: Storable> SimpleEntry<T> {
-    pub fn new(key: String, value: T) -> SimpleEntry<T> {
+impl SimpleEntry {
+    pub fn new(key: String, value: Box<dyn Storable>) -> SimpleEntry {
         SimpleEntry { key, value }
     }
 }
