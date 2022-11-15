@@ -1,2 +1,9 @@
 /target
 /Cargo.lock
+
+# IDE
+.idea
+.vscode
+
+# program output
+luna.yaml

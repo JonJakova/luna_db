@@ -30,7 +30,7 @@ impl MemoryMap {
         entries
     }
 
-    pub fn retrieve(&self, key: String) -> Option<&Box<dyn Storable>> {
+    pub fn retrieve(&self, key: &str) -> Option<&Box<dyn Storable>> {
         if self.entry.key == key {
             Some(&self.entry.value)
         } else {
@@ -57,6 +57,20 @@ impl MemoryMap {
             }
         }
     }
+
+    pub fn remove(&mut self, key: &str) {
+        let mut current_map = self;
+        let next = match &mut current_map.next {
+            Some(next) => next,
+            None => return,
+        };
+        if next.entry.key == key {
+            current_map.next = next.next.take();
+        } else {
+            next.remove(key);
+        }
+    }
+
 }
 
 pub struct SimpleEntry {
