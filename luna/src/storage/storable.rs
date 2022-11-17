@@ -1,5 +1,9 @@
-use super::traits::Storable;
 use std::collections::HashMap;
+
+pub trait Storable {
+    fn stringify(&self) -> String;
+    fn as_type(&self) -> String;
+}
 
 // String
 pub struct StorableString {

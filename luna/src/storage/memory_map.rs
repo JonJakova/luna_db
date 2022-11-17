@@ -1,4 +1,4 @@
-use super::traits::Storable;
+use super::storable::Storable;
 
 pub struct MemoryMap {
     entry: SimpleEntry,
