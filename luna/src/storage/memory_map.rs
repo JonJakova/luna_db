@@ -74,12 +74,20 @@ impl MemoryMap {
 }
 
 pub struct SimpleEntry {
-    pub key: String,
-    pub value: Box<dyn Storable>,
+    key: String,
+    value: Box<dyn Storable>,
 }
 
 impl SimpleEntry {
     pub fn new(key: String, value: Box<dyn Storable>) -> SimpleEntry {
         SimpleEntry { key, value }
+    }
+
+    pub fn key(&self) -> &String {
+        &self.key
+    }
+
+    pub fn value(&self) -> &Box<dyn Storable> {
+        &self.value
     }
 }

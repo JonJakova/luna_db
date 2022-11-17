@@ -1,5 +1,4 @@
 use std::fs;
-use std::io;
 use std::path;
 
 pub fn does_file_exists(path: &str) -> bool {
@@ -26,7 +25,7 @@ fn create_file(path_str: &str) -> fs::File {
 
 fn open_file(path_str: &str) -> fs::File {
     let path = path::Path::new(path_str);
-    if let Ok(file) = fs::File::open(path) {
+    if let Ok(file) = fs::OpenOptions::new().read(true).write(true).open(path) {
         return file;
     } else {
         panic!("couldn't open {}", path.display());

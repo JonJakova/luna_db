@@ -1,17 +1,16 @@
+#![allow(dead_code)]
+
 mod luna_action;
 mod persistency;
 mod storage;
 
-use std::io::Write;
 use persistency::persist;
+use std::io::Write;
 use storage::memory_map;
 use storage::storable;
 
 fn main() {
-    let mut map = memory_map::MemoryMap::new(
-        "__init__".to_string(),
-        Box::new(storable::StorableInteger::new(0)),
-    );
+    let mut map = persist::load_from_file("luna.yaml");
 
     // Print menu on startup
     println!("Welcome to Luna!");
@@ -23,7 +22,6 @@ fn main() {
     loop {
         action = luna_action::get_action();
         match action {
-            
             // add <key> <value> - Adds a new entry to the map
             luna_action::Action::Add { key, value } => {
                 map.insert(key, Box::new(storable::StorableString::new(value)));
@@ -43,7 +41,7 @@ fn main() {
             // list - Lists all entries in the map
             luna_action::Action::List => {
                 for entry in map.retrieve_all() {
-                    println!("{}: {}", entry.key, entry.value.stringify());
+                    println!("{}: {}", entry.key(), entry.value().stringify());
                 }
             }
 
