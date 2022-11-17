@@ -2,7 +2,31 @@ use std::collections::HashMap;
 
 pub trait Storable {
     fn stringify(&self) -> String;
-    fn as_type(&self) -> String;
+    fn as_type(&self) -> StorableType;
+}
+
+pub enum StorableType {
+    STRING,
+    INTEGER,
+    FLOAT,
+    BOOLEAN,
+    ARRAY,
+    OBJECT,
+    NULL,
+}
+
+impl StorableType {
+    pub fn as_str(&self) -> &str {
+        match self {
+            StorableType::STRING => "String",
+            StorableType::INTEGER => "Integer",
+            StorableType::FLOAT => "Float",
+            StorableType::BOOLEAN => "Boolean",
+            StorableType::ARRAY => "Array",
+            StorableType::OBJECT => "Object",
+            StorableType::NULL => "Null",
+        }
+    }
 }
 
 // String
@@ -14,8 +38,8 @@ impl Storable for StorableString {
     fn stringify(&self) -> String {
         self.value.clone()
     }
-    fn as_type(&self) -> String {
-        "String".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::STRING
     }
 }
 
@@ -39,8 +63,8 @@ impl Storable for StorableInteger {
         self.value.to_string()
     }
 
-    fn as_type(&self) -> String {
-        "Integer".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::INTEGER
     }
 }
 
@@ -74,8 +98,8 @@ impl Storable for StorableFloat {
         self.value.to_string()
     }
 
-    fn as_type(&self) -> String {
-        "Float".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::FLOAT
     }
 }
 
@@ -109,8 +133,8 @@ impl Storable for StorableBoolean {
         self.value.to_string()
     }
 
-    fn as_type(&self) -> String {
-        "Boolean".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::BOOLEAN
     }
 }
 
@@ -150,8 +174,8 @@ impl Storable for StorableArray {
         result
     }
 
-    fn as_type(&self) -> String {
-        "Array".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::ARRAY
     }
 }
 
@@ -209,8 +233,8 @@ impl Storable for StorableObject {
         result
     }
 
-    fn as_type(&self) -> String {
-        "Object".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::OBJECT
     }
 }
 
@@ -270,8 +294,8 @@ impl Storable for StorableNull {
         String::from("null")
     }
 
-    fn as_type(&self) -> String {
-        "Null".to_string()
+    fn as_type(&self) -> StorableType {
+        StorableType::NULL
     }
 }
 

@@ -2,6 +2,7 @@ use std::io::{Read, Write};
 
 use super::file;
 use crate::storable;
+use crate::storage::utils;
 use crate::storage::memory_map;
 
 pub fn persist_to_file(map: &memory_map::MemoryMap, path: &str) {
@@ -12,7 +13,7 @@ pub fn persist_to_file(map: &memory_map::MemoryMap, path: &str) {
             "{}: {} #{}\n",
             entry.key(),
             entry.value().stringify(),
-            entry.value().as_type()
+            entry.value().as_type().as_str()
         ));
     }
     file.write_all(file_content.as_bytes()).unwrap();
@@ -34,14 +35,15 @@ pub fn load_from_file(path: &str) -> memory_map::MemoryMap {
         let mut entry_parts = entry.split(": ");
         let key = entry_parts.next().unwrap();
         let value = entry_parts.next().unwrap();
+        let entry_type = utils::get_storable_type(entry_type);
         match entry_type {
-            "String" => {
+            storable::StorableType::STRING => {
                 map.insert(
                     key.to_string(),
                     Box::new(storable::StorableString::new(value.to_string())),
                 );
             }
-            "Integer" => {
+            storable::StorableType::INTEGER => {
                 map.insert(
                     key.to_string(),
                     Box::new(storable::StorableInteger::new(
@@ -49,14 +51,32 @@ pub fn load_from_file(path: &str) -> memory_map::MemoryMap {
                     )),
                 );
             }
-            "Float" => {
+            storable::StorableType::FLOAT => {
                 map.insert(
                     key.to_string(),
                     Box::new(storable::StorableFloat::new(value.parse::<f64>().unwrap())),
                 );
             }
+            storable::StorableType::BOOLEAN => {
+                map.insert(
+                    key.to_string(),
+                    Box::new(storable::StorableBoolean::new(value.parse::<bool>().unwrap())),
+                );
+            }
+            // storable::StorableType::ARRAY => {
+            //     map.insert(
+            //         key.to_string(),
+            //         Box::new(storable::StorableArray::new(value.to_string())),
+            //     );
+            // }
+            // storable::StorableType::OBJECT => {
+            //     map.insert(
+            //         key.to_string(),
+            //         Box::new(storable::StorableObject::new(value.to_string())),
+            //     );
+            // }
             _ => {
-                panic!("Unknown type: {}", entry_type);
+                panic!("Unknown type: {}", entry_type.as_str());
             }
         }
     }
