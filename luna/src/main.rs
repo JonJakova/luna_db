@@ -8,9 +8,10 @@ use persistency::persist;
 use std::io::Write;
 use storage::memory_map;
 use storage::storable;
+use storage::utils;
 
 fn main() {
-    let mut map = persist::load_from_file("luna.yaml");
+    let mut map = persist::load_from_file(&persist::get_db_file_path());
 
     // Print menu on startup
     println!("Welcome to Luna!");
@@ -24,7 +25,7 @@ fn main() {
         match action {
             // add <key> <value> - Adds a new entry to the map
             luna_action::Action::Add { key, value } => {
-                map.insert(key, Box::new(storable::StorableString::new(value)));
+                map.insert(key, utils::get_storable_obj_from_type(value));
             }
 
             // get <key> - Gets the value of the entry with the given key
@@ -55,7 +56,7 @@ fn main() {
 
             // exit - Exits the program
             luna_action::Action::Exit => {
-                persist::persist_to_file(&map, "luna.yaml");
+                persist::persist_to_file(&map, &persist::get_db_file_path());
                 break;
             }
 

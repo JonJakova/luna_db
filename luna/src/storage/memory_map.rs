@@ -1,5 +1,7 @@
 use super::storable::Storable;
 
+static mut _MAP_COUNTER: u64 = 0;
+
 pub struct MemoryMap {
     entry: SimpleEntry,
     next: Option<Box<MemoryMap>>,
@@ -52,12 +54,13 @@ impl MemoryMap {
                 Some(ref mut next) => current_map = next,
                 None => {
                     current_map.next = Some(Box::new(MemoryMap::new(key, value)));
+                    unsafe {_MAP_COUNTER += 1;}
                     return;
                 }
             }
         }
     }
-
+    
     pub fn remove(&mut self, key: &str) {
         let mut current_map = self;
         let next = match &mut current_map.next {
@@ -90,4 +93,8 @@ impl SimpleEntry {
     pub fn value(&self) -> &Box<dyn Storable> {
         &self.value
     }
+}
+
+pub fn get_map_counter() -> u64 {
+    unsafe { _MAP_COUNTER }
 }

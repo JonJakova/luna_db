@@ -5,8 +5,12 @@ use crate::storable;
 use crate::storage::utils;
 use crate::storage::memory_map;
 
+pub fn get_db_file_path() -> String {
+    String::from(".storage.luna")
+}
+
 pub fn persist_to_file(map: &memory_map::MemoryMap, path: &str) {
-    let mut file = file::create_file_if_not_exists(path);
+    let mut file = file::create_trucatable_file_if_not_exists(path, true);
     let mut file_content = String::new();
     for entry in map.retrieve_all() {
         file_content.push_str(&format!(

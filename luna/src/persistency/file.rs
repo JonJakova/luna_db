@@ -10,7 +10,15 @@ pub fn create_file_if_not_exists(path_str: &str) -> fs::File {
     if !does_file_exists(path_str) {
         return create_file(path_str);
     } else {
-        return open_file(path_str);
+        return open_file(path_str, false);
+    }
+}
+
+pub fn create_trucatable_file_if_not_exists(path_str: &str, truncate: bool) -> fs::File {
+    if !does_file_exists(path_str) {
+        return create_file(path_str);
+    } else {
+        return open_file(path_str, truncate);
     }
 }
 
@@ -23,9 +31,9 @@ fn create_file(path_str: &str) -> fs::File {
     return created_file;
 }
 
-fn open_file(path_str: &str) -> fs::File {
+fn open_file(path_str: &str, truncate: bool) -> fs::File {
     let path = path::Path::new(path_str);
-    if let Ok(file) = fs::OpenOptions::new().read(true).write(true).open(path) {
+    if let Ok(file) = fs::OpenOptions::new().read(true).write(true).truncate(truncate).open(path) {
         return file;
     } else {
         panic!("couldn't open {}", path.display());
