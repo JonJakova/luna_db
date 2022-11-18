@@ -11,15 +11,18 @@ use storage::storable;
 use storage::utils;
 
 fn main() {
-    let mut map = persist::load_from_file(&persist::get_db_file_path());
-
     // Print menu on startup
     println!("Welcome to Luna!");
     println!("Type 'help' to see a list of available commands.");
     print!("> ");
     std::io::stdout().flush().unwrap();
 
+    handle_interactive_flow();
+}
+
+fn handle_interactive_flow() {
     let mut action: luna_action::Action;
+    let mut map = persist::load_from_file(&persist::get_db_file_path());
     loop {
         action = luna_action::get_action();
         match action {
