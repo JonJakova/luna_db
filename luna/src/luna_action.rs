@@ -26,11 +26,11 @@ pub fn get_action() -> Action {
             let key = input.next().unwrap().to_string();
             Action::Get { key }
         }
-        "remove" => {
+        "remove" | "rm" => {
             let key = input.next().unwrap().to_string();
             Action::Remove { key }
         }
-        "list" => Action::List,
+        "list" | "ls" => Action::List,
         "clear" => Action::Clear,
         "exit" => Action::Exit,
         "help" => Action::Help,
