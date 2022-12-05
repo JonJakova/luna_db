@@ -5,7 +5,6 @@ mod persistency;
 mod storage;
 
 use persistency::persist;
-use std::io::Write;
 use storage::memory_map;
 use storage::storable;
 use storage::utils;
@@ -14,9 +13,6 @@ fn main() {
     // Print menu on startup
     println!("Welcome to Luna!");
     println!("Type 'help' to see a list of available commands.");
-    print!("> ");
-    std::io::stdout().flush().unwrap();
-
     handle_interactive_flow();
 }
 
@@ -75,7 +71,5 @@ fn handle_interactive_flow() {
                 println!("help - Print this menu");
             }
         }
-        print!("> ");
-        std::io::stdout().flush().unwrap();
     }
 }

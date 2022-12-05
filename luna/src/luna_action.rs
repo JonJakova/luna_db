@@ -1,4 +1,5 @@
 use std::io;
+use std::io::Write;
 
 pub enum Action {
     Add { key: String, value: String },
@@ -11,6 +12,8 @@ pub enum Action {
 }
 
 pub fn get_action() -> Action {
+    print!("> ");
+    std::io::stdout().flush().unwrap();
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
     let input = input.trim();
